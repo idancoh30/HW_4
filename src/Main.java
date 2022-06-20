@@ -1,5 +1,6 @@
 public class Main {
     public static void main(String[] args) {
+        //System.out.println(DateCalculator.isLeapYear(new Date(2,1,2024)));
         testPartA();
         //testPartB();
     }

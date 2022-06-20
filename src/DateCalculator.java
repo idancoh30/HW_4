@@ -5,6 +5,11 @@ public class DateCalculator {
         return date;
     }
 
+    public static boolean isLeapYear(Date date)
+    {
+        return ((date.getYear() % 4 == 0 && date.getYear() % 100 != 0) || (date.getYear() % 400 == 0));
+    }
+
     private static int whichMonth(Date date) {
         if (date.getMonth() == 4 || date.getMonth() == 6
                 || date.getMonth() == 9 || date.getMonth() == 11)
@@ -19,7 +24,10 @@ public class DateCalculator {
     private static Date addPositive(Date date, int num) {
         if (num == 0) return date;
         if (num >= 365) {
-            return addPositive(new Date(date.getDay(), date.getMonth(), date.getYear() + (num / 365)), num % 365);
+            if(isLeapYear(date))
+                return addPositive(new Date(date.getDay(), date.getMonth(), date.getYear() + 1), num - 366);
+            else
+                return addPositive(new Date(date.getDay(), date.getMonth(), date.getYear() + 1), num - 365);
         }
         if (whichMonth(date) == 31) {
             if (date.getDay() + 1 <= 31)
@@ -57,7 +65,11 @@ public class DateCalculator {
         if (num == 0)
             return date;
         if (num <= -365) {
-            return addNegative(new Date(date.getDay(), date.getMonth(), date.getYear() + (num / 365)), num % 365);
+            if(isLeapYear(date))
+                return addNegative(new Date(date.getDay(), date.getMonth(), date.getYear() - 1), num + 366);  //NEED TO CHANGE
+            else
+                return addNegative(new Date(date.getDay(), date.getMonth(), date.getYear() - 1), num + 365);  //NEED TO CHANGE
+
         }
         if (date.getDay() - 1 <= 0) {
             if (date.getMonth() - 1 == 1 || date.getMonth() - 1 == 3 || date.getMonth() - 1 == 5
@@ -70,7 +82,7 @@ public class DateCalculator {
                 return addNegative(new Date(30, date.getMonth() - 1, date.getYear()), num + 1);
             }
             if(date.getMonth()-1 == 2) {
-                if ((date.getYear() % 4 == 0 && date.getYear() % 100 != 0) || (date.getYear() % 400 == 0)) {
+                if (((date.getYear() % 4 == 0) && (date.getYear() % 100 != 0)) || (date.getYear() % 400 == 0)) {
                     return addNegative(new Date(29, date.getMonth() - 1, date.getYear()), num + 1);
                 } else {
                     return addNegative(new Date(28, date.getMonth() - 1, date.getYear()), num + 1);
