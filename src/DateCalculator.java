@@ -35,7 +35,7 @@ public class DateCalculator {
             return date;
         if(num >= 365) // Necessary check to prevent many recursive calls that will cause stack overflow.
         {//
-            if(isLeapYear(date)) // leap year contains 366 days.
+            if(isLeapYear(new Date(date.getDay(), date.getMonth(), date.getYear()+1))) // leap year contains 366 days.
                 return addPositive(new Date(date.getDay(), date.getMonth(), date.getYear()+1), num-366);
             else
                 return addPositive(new Date(date.getDay(), date.getMonth(), date.getYear()+1), num-365);
