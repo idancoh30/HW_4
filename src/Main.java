@@ -1,8 +1,7 @@
 public class Main {
     public static void main(String[] args) {
-        System.out.println(DateCalculator.addToDate(new Date(1,1,2000), 9200));
-        //testPartA();
-//        testPartB();
+        testPartA();
+        //testPartB();
     }
 
     private static void testPartA() {
@@ -14,7 +13,7 @@ public class Main {
     private static void testPartA1() {
         System.out.println("Testing part A1...");
         Date[] dates = {new Date(16, 6, 2022), new Date(1, 1, 10), new Date(5, 5, 555)};
-        int[] nums = {0, 1, 1, 100, 200, 12350, 21030};
+        int[] nums = {0, 1, -1, 100, -200, -12350, 21030};
 
         for (Date date : dates) {
             for (int num : nums) {
@@ -34,6 +33,7 @@ public class Main {
         }
     }
 
+    /*
     private static void testPartA2() {
         System.out.println("Testing part A2...");
         BinNode<Integer> root = new BinNode<>(5);
@@ -48,7 +48,6 @@ public class Main {
         System.out.println();
     }
 
-    /*
     private static void testPartB() {
         System.out.println("Testing part B...");
         for (int i = 0; i < 100; i++) {
@@ -101,37 +100,56 @@ public class Main {
 }
 
 
-    class Counter {
-        public static int count = 0;
+class Counter {
+    public static int count = 0;
+}
+
+abstract class Worker implements Runnable {
+    protected final MyReentrantLock lock;
+
+    public Worker(MyReentrantLock lock) {
+        this.lock = lock;
     }
 
-    abstract class Worker implements Runnable {
-        protected final MyReentrantLock lock;
+    protected abstract void lockAndIncrement();
 
-        public Worker(MyReentrantLock lock) {
-            this.lock = lock;
-        }
-
-        protected abstract void lockAndIncrement();
-
-        @Override
-        public void run() {
-            for (int i = 0; i < 100000; i++) {
-                lockAndIncrement();
-                if (i % 100 == 0) {
-                    Thread.yield();  // Give other threads a chance by giving up my time slice
-                }
+    @Override
+    public void run() {
+        for (int i = 0; i < 100000; i++) {
+            lockAndIncrement();
+            if (i % 100 == 0) {
+                Thread.yield();  // Give other threads a chance by giving up my time slice
             }
         }
     }
+}
 
-    class OneAcquireWorker extends Worker {
-        public OneAcquireWorker(MyReentrantLock lock) {
-            super(lock);
+class OneAcquireWorker extends Worker {
+    public OneAcquireWorker(MyReentrantLock lock) {
+        super(lock);
+    }
+
+    @Override
+    protected void lockAndIncrement() {
+        try {
+            lock.acquire();
+            Counter.count++;
+        } finally {
+            lock.release();
         }
+    }
+}
 
-        @Override
-        protected void lockAndIncrement() {
+
+class TryWithResourcesAcquireWorker extends Worker {
+    public TryWithResourcesAcquireWorker(MyReentrantLock lock) {
+        super(lock);
+    }
+
+    @Override
+    protected void lockAndIncrement() {
+        try (lock) {
+            lock.acquire();
             try {
                 lock.acquire();
                 Counter.count++;
@@ -139,26 +157,5 @@ public class Main {
                 lock.release();
             }
         }
-    }
-
-
-    class TryWithResourcesAcquireWorker extends Worker {
-        public TryWithResourcesAcquireWorker(MyReentrantLock lock) {
-            super(lock);
-        }
-
-        @Override
-        protected void lockAndIncrement() {
-            try (lock) {
-                lock.acquire();
-                try {
-                    lock.acquire();
-                    Counter.count++;
-                } finally {
-                    lock.release();
-                }
-            }
-        }
-    }
-    */
+    }*/
 }
