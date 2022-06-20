@@ -1,6 +1,7 @@
 public class Main {
     public static void main(String[] args) {
-        //System.out.println(DateCalculator.isLeapYear(new Date(2,1,2024)));
+        Date d = new Date(10,10,2022);
+        System.out.println(DateCalculator.addPositive(d,30));
         testPartA();
         //testPartB();
     }
