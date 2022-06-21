@@ -1,9 +1,8 @@
+import java.util.ArrayDeque;
+
 public class Main {
     public static void main(String[] args) {
-        Date d = new Date(10,10,2022);
-        System.out.println(DateCalculator.addPositive(d,30));
-        testPartA();
-        //testPartB();
+
     }
 
     private static void testPartA() {

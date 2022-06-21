@@ -7,10 +7,11 @@ public class DateCalculator {
         return date;
     }
 
-    public static boolean isLeapYear(Date date) {
+    private static boolean isLeapYear(Date date) {
         return ((date.getYear() % 4 == 0 && date.getYear() % 100 != 0) || (date.getYear() % 400 == 0));
     }
-    public static int getDaysInMonth(Date date)
+
+    private static int getDaysInMonth(Date date)
     {
         if (date.getMonth() == 4 || date.getMonth() == 6
                 || date.getMonth() == 9 || date.getMonth() == 11)
@@ -63,6 +64,7 @@ public class DateCalculator {
         if (date.getDay() - 1 == 0) {
             if(date.getMonth() == 1) // We're on january, need to take one year back.
                 return addNegative(new Date(31,12,date.getYear()-1),num+1);
+            // We should understand to which month we're going.
             int daysInNewMonth = getDaysInMonth(new Date(1, date.getMonth()-1,date.getYear()));
             return addNegative(new Date(daysInNewMonth,date.getMonth()-1,date.getYear()), num+1);
         }
