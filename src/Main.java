@@ -1,8 +1,11 @@
 import java.util.ArrayDeque;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
-    public static void main(String[] args) {
-        testPartA();
+    public static void main(String[] args) throws InterruptedException {
+        //testPartA();
+        Thread a = new Thread();
+        a.join();
     }
 
     private static void testPartA() {
@@ -48,7 +51,6 @@ public class Main {
         System.out.println("Level with most occurrences of 2: " + LevelMostOccurrences.getLevelWithMostOccurrences(root, 2));
         System.out.println();
     }
-    /*
 
     private static void testPartB() {
         System.out.println("Testing part B...");
@@ -159,5 +161,5 @@ class TryWithResourcesAcquireWorker extends Worker {
                 lock.release();
             }
         }
-    }*/
+    }
 }
