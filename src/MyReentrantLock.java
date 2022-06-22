@@ -1,28 +1,41 @@
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class MyReentrantLock implements Lock {
     private Thread lockingThread; // null --> unlocked.
     private int lockCounter; // 0 --> unlocked.
+    private AtomicBoolean isLocked;
 
     public MyReentrantLock() {
         this.lockingThread = null;
         this.lockCounter = 0;
+        this.isLocked = new AtomicBoolean();
     }
 
     @Override
     public void acquire() {
-        while (lockCounter > 0 && lockingThread != Thread.currentThread()) {  // if locked by another thread, wait
-            try {
-                this.wait();
-            } catch (InterruptedException e) {
+        if(lockCounter >0 && lockingThread == Thread.currentThread()) // המנעול נמצא אצלי ואני מנסה לנעול עוד דברים חדשים
+        {
+            lockCounter++;
+        }
+        else { // המנעול לא אצלי אבל הוא אצל מישהו אחר או שהמנעול פנוי
+            while(!(isLocked.compareAndSet(false, true))) // המנעול אצל מישהו אחר! אני צריך לחכות
+            {
+                try {
+                    Thread.sleep(5);
+                }
+                catch (InterruptedException e) {
+
+                }
             }
             lockingThread = Thread.currentThread();
             lockCounter++;
+
         }
     }
 
     @Override
     public boolean tryAcquire() {
-        if(lockingThread == null && lockCounter == 0)
-        {
+        if (!isLocked.get()){
             acquire();
             return true;
         }
@@ -31,17 +44,29 @@ public class MyReentrantLock implements Lock {
 
     @Override
     public void release() {
-        if ((Thread.currentThread() != lockingThread) || (lockCounter == 0)){
+        if(!isLocked.get() || Thread.currentThread() != lockingThread)
             throw new IllegalReleaseAttempt();
+
+        else {
+            lockCounter--;
+            if(lockCounter == 0) {
+                lockingThread = null;
+                isLocked.set(false);
+
+            }
+            Thread.currentThread().interrupt();  // notify others that lock can be acquired again
         }
-        lockCounter = 0;
-        lockingThread = null;
-        this.notifyAll();  // notify others that lock can be acquired again
 
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
+        try {
+            release();
+        }
+        catch (Exception e)
+        {
 
+        }
     }
 }

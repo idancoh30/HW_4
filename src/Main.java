@@ -3,9 +3,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        //testPartA();
-        Thread a = new Thread();
-        a.join();
+        testPartB();
     }
 
     private static void testPartA() {
