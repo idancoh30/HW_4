@@ -82,7 +82,6 @@ public class DateCalculator {
         if (num == 0) // Nothing to calculate, return the given date itself.
             return date;
         if (num <= -365) {
-            //if (isLeapYear(date)) // leap year contains 366 days.
             if(isLeapYear(new Date(date.getDay(), date.getMonth(), date.getYear()-1))) // leap year contains 366 days.
                 return addNegative(new Date(date.getDay(), date.getMonth(), date.getYear() - 1), num + 366);
             else

@@ -53,7 +53,7 @@ public class MyReentrantLock implements Lock {
 
     /**
      * Releases the lock.
-     * @throws IllegalReleaseAttempt if tryinig to release unlocked lock, or if non-locking thread is trying to release the lock.
+     * @throws IllegalReleaseAttempt if trying to release unlocked lock, or if non-locking thread is trying to release the lock.
      */
     @Override
     public void release() {
