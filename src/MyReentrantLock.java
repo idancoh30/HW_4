@@ -1,36 +1,47 @@
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * A MyReentrantLock is a mutual exclusion mechanism that allows threads to reenter into a lock on a resource (mulitple times)
+ */
 public class MyReentrantLock implements Lock {
-    private Thread lockingThread; // null --> unlocked.
-    private int lockCounter; // 0 --> unlocked.
-    private AtomicBoolean isLocked;
+    private Thread lockingThread; // current locking thread.
+    private int lockCounter; // counts how many times a thread acquired the lock.
+    private AtomicBoolean isLocked; // indicated whether thread is locked or not.
 
+    /**
+     * Creates an instance of MyReentrantLock.
+     */
     public MyReentrantLock() {
         this.lockingThread = null;
         this.lockCounter = 0;
         this.isLocked = new AtomicBoolean();
     }
 
+    /**
+     * Acquires the lock.
+     */
     @Override
     public void acquire() {
-        if (lockCounter > 0 && lockingThread == Thread.currentThread()) // המנעול נמצא אצלי ואני מנסה לנעול עוד דברים חדשים
+        if (lockCounter > 0 && lockingThread == Thread.currentThread()) // Current locking thread trying to acquire lock again.
         {
             lockCounter++;
         }
-        else { // המנעול לא אצלי אבל הוא אצל מישהו אחר או שהמנעול פנוי
-            while (!(isLocked.compareAndSet(false, true))) // המנעול אצל מישהו אחר! אני צריך לחכות
+        else {
+            while (!(isLocked.compareAndSet(false, true))) // Lock is acquired by another thread.
             {
                 try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-
-                }
+                    Thread.sleep(10); //Suspends current thread untill lock is available.
+                } catch (InterruptedException e) { }
             }
             lockingThread = Thread.currentThread();
             lockCounter++;
         }
     }
 
+    /**
+     * Tries to acquire the lock, if lock is available - acquire it.
+     * @return true if lock can be acquired, false otherwise.
+     */
     @Override
     public boolean tryAcquire() {
         if (isLocked.get())
@@ -40,6 +51,10 @@ public class MyReentrantLock implements Lock {
         return true;
     }
 
+    /**
+     * Releases the lock.
+     * @throws IllegalReleaseAttempt if tryinig to release unlocked lock, or if non-locking thread is trying to release the lock.
+     */
     @Override
     public void release() {
         if (!isLocked.get() || Thread.currentThread() != lockingThread)
@@ -54,6 +69,9 @@ public class MyReentrantLock implements Lock {
         }
     }
 
+    /**
+     * Closes this resource.
+     */
     @Override
     public void close() {
         release();

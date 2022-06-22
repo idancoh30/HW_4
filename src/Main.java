@@ -1,21 +1,12 @@
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayDeque;
-import java.util.concurrent.locks.ReentrantLock;
-
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
-        long start = System.currentTimeMillis();
+    public static void main(String[] args) {
+        testPartA();
         testPartB();
-        long end = System.currentTimeMillis();
-        System.out.println((end-start)/1000.0);
-
     }
 
     private static void testPartA() {
         System.out.println("Testing part A...");
-        //testPartA1();
+        testPartA1();
         testPartA2();
     }
 
@@ -41,7 +32,6 @@ public class Main {
             System.out.println("Subtracting " + -num + " from " + date + " result: " + result);
         }
     }
-
 
     private static void testPartA2() {
         System.out.println("Testing part A2...");
