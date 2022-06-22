@@ -1,9 +1,16 @@
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayDeque;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
+        long start = System.currentTimeMillis();
         testPartB();
+        long end = System.currentTimeMillis();
+        System.out.println((end-start)/1000.0);
+
     }
 
     private static void testPartA() {

@@ -16,18 +16,18 @@ public class MyReentrantLock implements Lock {
         if (lockCounter > 0 && lockingThread == Thread.currentThread()) // המנעול נמצא אצלי ואני מנסה לנעול עוד דברים חדשים
         {
             lockCounter++;
-        } else { // המנעול לא אצלי אבל הוא אצל מישהו אחר או שהמנעול פנוי
+        }
+        else { // המנעול לא אצלי אבל הוא אצל מישהו אחר או שהמנעול פנוי
             while (!(isLocked.compareAndSet(false, true))) // המנעול אצל מישהו אחר! אני צריך לחכות
             {
                 try {
-                    Thread.sleep(55);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
 
                 }
             }
             lockingThread = Thread.currentThread();
             lockCounter++;
-
         }
     }
 
@@ -35,7 +35,8 @@ public class MyReentrantLock implements Lock {
     public boolean tryAcquire() {
         if (isLocked.get())
             return false;
-        acquire();
+        isLocked.set(true);
+        lockingThread = Thread.currentThread();
         return true;
     }
 
@@ -49,10 +50,7 @@ public class MyReentrantLock implements Lock {
             if (lockCounter == 0) {
                 lockingThread = null;
                 isLocked.set(false);
-
             }
-
-            Thread.currentThread().interrupt();  // notify others that lock can be acquired again
         }
     }
 
