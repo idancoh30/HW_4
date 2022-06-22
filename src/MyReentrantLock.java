@@ -13,17 +13,15 @@ public class MyReentrantLock implements Lock {
 
     @Override
     public void acquire() {
-        if(lockCounter >0 && lockingThread == Thread.currentThread()) // המנעול נמצא אצלי ואני מנסה לנעול עוד דברים חדשים
+        if (lockCounter > 0 && lockingThread == Thread.currentThread()) // המנעול נמצא אצלי ואני מנסה לנעול עוד דברים חדשים
         {
             lockCounter++;
-        }
-        else { // המנעול לא אצלי אבל הוא אצל מישהו אחר או שהמנעול פנוי
-            while(!(isLocked.compareAndSet(false, true))) // המנעול אצל מישהו אחר! אני צריך לחכות
+        } else { // המנעול לא אצלי אבל הוא אצל מישהו אחר או שהמנעול פנוי
+            while (!(isLocked.compareAndSet(false, true))) // המנעול אצל מישהו אחר! אני צריך לחכות
             {
                 try {
-                    Thread.sleep(5);
-                }
-                catch (InterruptedException e) {
+                    Thread.sleep(55);
+                } catch (InterruptedException e) {
 
                 }
             }
@@ -35,38 +33,31 @@ public class MyReentrantLock implements Lock {
 
     @Override
     public boolean tryAcquire() {
-        if (!isLocked.get()){
-            acquire();
-            return true;
-        }
-        return false;
+        if (isLocked.get())
+            return false;
+        acquire();
+        return true;
     }
 
     @Override
     public void release() {
-        if(!isLocked.get() || Thread.currentThread() != lockingThread)
+        if (!isLocked.get() || Thread.currentThread() != lockingThread)
             throw new IllegalReleaseAttempt();
 
         else {
             lockCounter--;
-            if(lockCounter == 0) {
+            if (lockCounter == 0) {
                 lockingThread = null;
                 isLocked.set(false);
 
             }
+
             Thread.currentThread().interrupt();  // notify others that lock can be acquired again
         }
-
     }
 
     @Override
     public void close() {
-        try {
-            release();
-        }
-        catch (Exception e)
-        {
-
-        }
+        release();
     }
 }
